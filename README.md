@@ -170,11 +170,25 @@ You can install RISE in development mode adding ``--develop`` (as a symlink to t
   python setup.py install --develop
 ```
 
-To build the CSS assets, you'll need to install `npm` (and `node`).
+Additionally, you'll need to install `npm` (and `node`).
+
+To get all the dependencies, at the top level directory, use:
 
 ```bash
 npm install
-npm run build
+```
+
+Reveal.js is shipped with the repo but you can eventually tweak the `package.json` file
+to point to a specific Reveal.js version and install it with:
+
+```bash
+npm run install-reveal
+```
+
+To build the CSS assets, use:
+
+```bash
+npm run build-css
 ```
 
 To have per-save automatic building of CSS, use:
