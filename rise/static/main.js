@@ -177,7 +177,7 @@ function setStartingSlide(selected, config) {
 }
 
 /* Setup a MutationObserver to call Reveal.sync when an output is generated.
- * This fixes issue #188: https://github.com/damianavila/RISE/issues/188 
+ * This fixes issue #188: https://github.com/damianavila/RISE/issues/188
  */
 var outputObserver = null;
 function setupOutputObserver() {
@@ -192,7 +192,7 @@ function setupOutputObserver() {
   var $output = $(".output");
   var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
   outputObserver = new MutationObserver(mutationHandler);
-  
+
   var observerConfig = { childList: true, characterData: false, attributes: false, subtree: false };
   $output.each(function () {
     outputObserver.observe(this, observerConfig);
@@ -268,12 +268,22 @@ function Revealer(config) {
     188: function() {$('#help_b,#exit_b').fadeToggle();},
     },
 
+    chalkboard: {
+        theme: "whiteboard",
+        color: ["#D84315", "white"],
+        transition: 100,
+        toggleChalkboardButton: false,
+        readOnly: false
+    },
+
     // Optional libraries used to extend on reveal.js
     // Notes are working partially... it opens the notebooks, not the slideshows...
     dependencies: [
-            //{ src: "static/custom/livereveal/reveal.js/lib/js/classList.js", condition: function() { return !document.body.classList; } },
-            //{ src: "static/custom/livereveal/reveal.js/plugin/highlight/highlight.js", async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-            { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true, condition: function() { return !!document.body.classList; } }
+        //{ src: "static/custom/livereveal/reveal.js/lib/js/classList.js", condition: function() { return !document.body.classList; } },
+        //{ src: "static/custom/livereveal/reveal.js/plugin/highlight/highlight.js", async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true, condition: function() { return !!document.body.classList; } },
+        { src: require.toUrl("./reveal.js/plugin/chalkboard/chalkboard.js"),
+          async: true }
         ]
     };
 
@@ -284,7 +294,10 @@ function Revealer(config) {
         options.leap = leap;
     }
 
+    Reveal.isAutoSliding = function() { return false; };
     Reveal.initialize(options);
+
+    window.RevealChalkboard && window.RevealChalkboard.setup();
 
     Reveal.addEventListener( 'ready', function( event ) {
       Unselecter();
@@ -385,17 +398,9 @@ function buttonHelp() {
     var help_button = $('<i/>')
         .attr('id','help_b')
         .attr('title','Reveal Shortcuts Help')
-        .addClass('fa-question fa-4x fa')
+        .addClass('fa-question fa-2x fa')
         .addClass('my-main-tool-bar')
-        .css('position','fixed')
-        .css('bottom','0.5em')
-        .css('left','0.6em')
-        .css('opacity', '0.6')
-        .click(
-            function(){
-                KeysMessager();
-            }
-        );
+        .click(function() { KeysMessager(); });
     $('.reveal').after(help_button);
 }
 
@@ -403,23 +408,21 @@ function buttonExit() {
     var exit_button = $('<i/>')
         .attr('id','exit_b')
         .attr('title','RISE Exit')
-        .addClass('fa-times-circle fa-4x fa')
+        .addClass('fa-times-circle fa-2x fa')
         .addClass('my-main-tool-bar')
-        .css('position','fixed')
-        .css('top','0.5em')
-        .css('left','0.48em')
-        .css('opacity', '0.6')
-        .click(
-            function(){
-                revealMode('simple', 'zoom');
-            }
-        );
+        .click(function() {
+            revealMode('simple', 'zoom');
+        });
     $('.reveal').after(exit_button);
 }
 
 function Remover(config) {
   Reveal.configure({minScale: 1.0});
   Reveal.removeEventListeners();
+
+  RevealChalkboard.clear();
+  $("#notescanvas, #chalkboard, #toggle-notes, #toggle-chalkboard").remove();
+
   $('body').removeClass("rise-enabled");
 
   var scroll = config.get_sync('scroll');
@@ -483,8 +486,7 @@ function revealMode() {
   } else {
     Remover(config);
     setupKeys("notebook_mode");
-    $('#exit_b').remove();
-    $('#help_b').remove();
+    $('#exit_b, #help_b').remove();
     $('#maintoolbar').removeClass('reveal_tagging');
     // Workaround... should be a better solution. Need to investigate codemirror
     fixCellHeight();
