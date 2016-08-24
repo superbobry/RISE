@@ -280,8 +280,6 @@ function Revealer(selected_slide, config) {
            './reveal.js/js/reveal.js'].map(require.toUrl),function(){
     // Full list of configuration options available here: https://github.com/hakimel/reveal.js#configuration
 
-    Reveal.initialize();
-
     var options = {
     // All this config option load correctly just because of require-indeced delay,
     // it would be better to catch them from the config.get promise.
@@ -339,7 +337,7 @@ function Revealer(selected_slide, config) {
         options.leap = leap;
     }
 
-    Reveal.configure(options);
+    Reveal.initialize(options);
 
     Reveal.addEventListener( 'ready', function( event ) {
       Unselecter();
