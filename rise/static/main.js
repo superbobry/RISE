@@ -165,7 +165,7 @@ function Revealer() {
   $('div#notebook-container').addClass("slides");
 
   // Header
-  $('head').prepend('<link rel="stylesheet" href=' + require.toUrl("./reveal.js/css/theme/simple.css") + ' id="theme" />');
+  $('head').prepend('<link rel="stylesheet" href=' + require.toUrl("./reveal.js/css/theme/default.css") + ' id="theme" />');
   $('head').prepend('<link rel="stylesheet" href=' + require.toUrl("./reset_reveal.css") + ' id="revealcss" />');
 
   // Tailer
@@ -189,8 +189,6 @@ function Revealer() {
 
     keyboard: {
         13: null, // Enter disabled
-        38: null, // up arrow disabled
-        40: null, // down arrow disabled
         66: null, // b, black pause disabled, use period or forward slash
         72: null, // h, left disabled
         74: null, // j, down disabled
