@@ -15,6 +15,12 @@ define([
         'services/config',
 ], function(require, $, utils, configmod) {
 
+// Copy/pasted PR#1709. https://github.com/jupyter/notebook/pull/1709
+configmod.ConfigWithDefaults.prototype.get_sync = function(key) {
+    var data = this._class_data();
+    return key in data ? data[key] : this.defaults[key];
+}
+
 function configSlides() {
   /*
   * Add customized config on top of the default options using the notebook metadata
@@ -231,17 +237,17 @@ function Revealer(config) {
     // Full list of configuration options available here: https://github.com/hakimel/reveal.js#configuration
 
     var options = {
-    controls: config.get_sync('controls'),
-    progress: config.get_sync('progress'),
-    history: config.get_sync('history'),
-
+    controls: false,
+    progress: true,
+    history: false,
+    center: true,
     // You can switch width and height to fix the projector
     width: config.get_sync('width'),
-    height: config.get_sync('height'),
+    // height: config.get_sync('height'),
     minScale: config.get_sync('minScale'), //we need this for codemirror to work right)
 
     // available themes are in /css/theme
-    theme: Reveal.getQueryHash().theme || config.get_sync('theme'),
+    theme: 'klu',
     // default/cube/page/concave/zoom/linear/none
     transition: Reveal.getQueryHash().transition || config.get_sync('transition'),
 
@@ -271,7 +277,7 @@ function Revealer(config) {
     chalkboard: {
         theme: "whiteboard",
         color: ["#D84315", "white"],
-        transition: 100,
+        transition: 200,
         toggleChalkboardButton: false,
         readOnly: false
     },
@@ -279,8 +285,8 @@ function Revealer(config) {
     // Optional libraries used to extend on reveal.js
     // Notes are working partially... it opens the notebooks, not the slideshows...
     dependencies: [
-        //{ src: "static/custom/livereveal/reveal.js/lib/js/classList.js", condition: function() { return !document.body.classList; } },
-        //{ src: "static/custom/livereveal/reveal.js/plugin/highlight/highlight.js", async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: "static/custom/livereveal/reveal.js/lib/js/classList.js", condition: function() { return !document.body.classList; } },
+        { src: "static/custom/livereveal/reveal.js/plugin/highlight/highlight.js", async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
         { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true, condition: function() { return !!document.body.classList; } },
         { src: require.toUrl("./reveal.js/plugin/chalkboard/chalkboard.js"),
           async: true }

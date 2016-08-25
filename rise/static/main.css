@@ -56,6 +56,7 @@
 .rise-enabled .reveal blockquote p:last-child {
   display: inherit;
 }
+.rise-enabled .reveal blockquote { margin: 30px auto; }
 .rise-enabled .reveal .slides {
   -webkit-transition-property: all;
           transition-property: all;
@@ -162,9 +163,9 @@
 .rise-enabled .cell li {
   line-height: 160%;
 }
-.rise-enabled .text_cell {
-  font-size: 160%;
-}
+/* .rise-enabled .text_cell { */
+/*   font-size: 160%; */
+/* } */
 .rise-enabled .text_cell .prompt {
   display: none;
 }
