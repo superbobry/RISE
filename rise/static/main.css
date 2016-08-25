@@ -74,8 +74,6 @@
           transition-duration: 0.2s;
   -webkit-transition-timing-function: ease;
           transition-timing-function: ease;
-  right: 3.1em;
-  bottom: 3.9em;
   font-size: 100%;
 }
 .rise-enabled .reveal .controls .navigate-left,
@@ -282,33 +280,3 @@
 /* chalkboard plugin */
 #notescanvas { position: absolute; top: 0; }
 #chalkboard { display: none; }
-
-/* button toolbar */
-#help_b,
-#exit_b,
-#toggle-notes {
-  position: fixed !important;
-  z-index: 30;
-  cursor: pointer;
-  color: #727272;
-}
-
-#help_b, #toggle-notes {
-  bottom: 0.8em !important;
-}
-
-#help_b { left: 0.6em ;}
-
-#toggle-notes {
-  left: 3.6em !important;
-}
-
-#toggle-notes i {
-  line-height: 1.7em;
-  font-size: 1.8em;
-}
-
-#exit_b {
-  top: 0.8em;
-  left: 0.6em;
-}

@@ -12,59 +12,7 @@ define([
         'require',
         'jquery',
         'base/js/utils',
-        'services/config',
-], function(require, $, utils, configmod) {
-
-// Copy/pasted PR#1709. https://github.com/jupyter/notebook/pull/1709
-configmod.ConfigWithDefaults.prototype.get_sync = function(key) {
-    var data = this._class_data();
-    return key in data ? data[key] : this.defaults[key];
-}
-
-function configSlides() {
-  /*
-  * Add customized config on top of the default options using the notebook metadata
-  * or the config system
-  */
-  var default_config = {
-      controls: true,
-      progress: true,
-      history: true,
-      width: 1140,
-      height: 855, // 4:3 ratio
-      minScale: 1.0, //we need this for codemirror to work right
-      theme: 'simple',
-      transition: 'linear',
-      slideNumber: true,
-      start_slideshow_at: 'beginning',
-      scroll: false,
-  };
-
-  var config_section = new configmod.ConfigSection('livereveal',
-                              {base_url: utils.get_body_data("baseUrl")});
-  config_section.load();
-
-  // dummy empty config section to load the metadata + default as a ConfigWithDefaults object
-  var _config_section = new configmod.ConfigSection('_livereveal',
-                              {base_url: utils.get_body_data("baseUrl")});
-  _config_section.load();
-
-  var final_config;
-
-  var rise_meta = IPython.notebook.metadata.livereveal;
-
-  if(rise_meta !== undefined && Object.keys(rise_meta).length > 0){
-      final_config = $.extend(true, default_config, rise_meta);
-      final_config = new configmod.ConfigWithDefaults(_config_section, final_config);
-      console.log("RISE metadata detected. Using ONLY RISE metadata on top of the default config. Custom config disabled.")
-  } else {
-      final_config = new configmod.ConfigWithDefaults(config_section, default_config);
-      console.log("No (or empty) RISE metadata. Using ONLY custom config (if exist) on top of the default config.")
-  }
-
-  return final_config
-
-}
+], function(require, $) {
 
 Object.getPrototypeOf(IPython.notebook).get_cell_elements = function () {
   /*
@@ -171,15 +119,9 @@ function markupSlides(container) {
  * changing to the one we want. By changing the URL before setting up reveal,
  * the slideshow really starts on the desired slide.
  */
-function setStartingSlide(selected, config) {
-    var start_slideshow = config.get_sync('start_slideshow_at');
-    if (start_slideshow === 'selected') {
-        // Start from the selected cell
-        window.location.hash = "/slide-"+selected[0]+"-"+selected[1];
-    } else {
-        // Start from the beginning
-        window.location.hash = "/slide-0-0";
-    }
+function setStartingSlide(selected) {
+    // Start from the selected cell
+    window.location.hash = "/slide-"+selected[0]+"-"+selected[1];
 }
 
 /* Setup a MutationObserver to call Reveal.sync when an output is generated.
@@ -212,18 +154,13 @@ function disconnectOutputObserver() {
 }
 
 
-function Revealer(config) {
+function Revealer() {
   $('body').addClass("rise-enabled");
   // Prepare the DOM to start the slideshow
   //$('div#header').hide();
   //$('div#site').css("height", "100%");
   //$('div#ipython-main-app').css("position", "static");
-  // Set up the scrolling feature
-  var scroll = config.get_sync('scroll');
-  if (scroll === true) {
-    $('body').css("overflow-y", "auto");
-    $('body').css("overflow-x", "hidden");
-  }
+
   $('div#notebook').addClass("reveal");
   $('div#notebook-container').addClass("slides");
 
@@ -241,37 +178,28 @@ function Revealer(config) {
     progress: true,
     history: false,
     center: true,
-    // You can switch width and height to fix the projector
-    width: config.get_sync('width'),
-    // height: config.get_sync('height'),
-    minScale: config.get_sync('minScale'), //we need this for codemirror to work right)
+    width: 1140,  // 4:3
+    height: 855,
+    minScale: 1.0, // for codemirror to work right.
 
-    // available themes are in /css/theme
     theme: 'klu',
-    // default/cube/page/concave/zoom/linear/none
-    transition: Reveal.getQueryHash().transition || config.get_sync('transition'),
+    transition: 'linear',
 
-    slideNumber: config.get_sync('slideNumber'),
-
-    //parallaxBackgroundImage: 'https://raw.github.com/damianavila/par_IPy_slides_example/gh-pages/figs/star_wars_stormtroopers_darth_vader.jpg',
-    //parallaxBackgroundSize: '2560px 1600px',
+    slideNumber: 'h.v/t',
 
     keyboard: {
-    13: null, // Enter disabled
-    27: null, // ESC disabled
-    38: null, // up arrow disabled
-    40: null, // down arrow disabled
-    66: null, // b, black pause disabled, use period or forward slash
-    72: null, // h, left disabled
-    74: null, // j, down disabled
-    75: null, // k, up disabled
-    76: null, // l, right disabled
-    78: null, // n, down disable
-    79: null, // o disabled
-    80: null, // p, up disable
-    // 83: null, // s, notes, but not working because notes is a plugin
-    87: function() {Reveal.toggleOverview();}, // w, toggle overview
-    188: function() {$('#help_b,#exit_b').fadeToggle();},
+        13: null, // Enter disabled
+        38: null, // up arrow disabled
+        40: null, // down arrow disabled
+        66: null, // b, black pause disabled, use period or forward slash
+        72: null, // h, left disabled
+        74: null, // j, down disabled
+        75: null, // k, up disabled
+        76: null, // l, right disabled
+        78: null, // n, down disable
+        79: null, // o disabled
+        80: null, // p, up disable
+        27: function() { revealMode('simple', 'zoom') }
     },
 
     chalkboard: {
@@ -279,26 +207,21 @@ function Revealer(config) {
         color: ["#D84315", "white"],
         transition: 200,
         toggleChalkboardButton: false,
+        toggleNotesButton: false,
         readOnly: false
     },
 
-    // Optional libraries used to extend on reveal.js
-    // Notes are working partially... it opens the notebooks, not the slideshows...
     dependencies: [
-        { src: "static/custom/livereveal/reveal.js/lib/js/classList.js", condition: function() { return !document.body.classList; } },
-        { src: "static/custom/livereveal/reveal.js/plugin/highlight/highlight.js", async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-        { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true, condition: function() { return !!document.body.classList; } },
+        { src: "static/custom/livereveal/reveal.js/lib/js/classList.js",
+          condition: function() { return !document.body.classList; } },
+        { src: "static/custom/livereveal/reveal.js/plugin/highlight/highlight.js",
+          async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true,
+          condition: function() { return !!document.body.classList; } },
         { src: require.toUrl("./reveal.js/plugin/chalkboard/chalkboard.js"),
           async: true }
         ]
     };
-
-    // Set up the Leap Motion integration if configured
-    var leap = config.get_sync('leap_motion');
-    if (leap !== undefined) {
-        options.dependencies.push({ src: require.toUrl('./reveal.js/plugin/leap/leap.js'), async: true });
-        options.leap = leap;
-    }
 
     Reveal.isAutoSliding = function() { return false; };
     Reveal.initialize(options);
@@ -346,11 +269,10 @@ function fixCellHeight(){
 
 
 function setupKeys(mode){
-  var versions = IPython.version.split(".").map(Number);
-  if(versions < [4, 1]){
-    setupKeysLegacy(mode);
-    return;
-  }
+  var versions = IPython.version.split(".")
+      .map(function(s) { return parseInt(s, 10)});
+  console.assert(versions >= [4, 1]);
+
   if (mode === 'reveal_mode') {
     IPython.keyboard_manager.command_shortcuts.set_shortcut("shift-enter", "jupyter-notebook:run-cell");
     IPython.keyboard_manager.edit_shortcuts.set_shortcut("shift-enter", "jupyter-notebook:run-cell");
@@ -360,82 +282,14 @@ function setupKeys(mode){
   }
 }
 
-function setupKeysLegacy(mode){
-  if (mode === 'reveal_mode') {
-    IPython.keyboard_manager.command_shortcuts.set_shortcut("shift-enter", "ipython.execute-in-place")
-    IPython.keyboard_manager.edit_shortcuts.set_shortcut("shift-enter", "ipython.execute-in-place")
-  } else if (mode === 'notebook_mode') {
-    IPython.keyboard_manager.command_shortcuts.set_shortcut("shift-enter", "ipython.run-select-next")
-    IPython.keyboard_manager.edit_shortcuts.set_shortcut("shift-enter", "ipython.run-select-next")
-  }
-}
-
-function KeysMessager() {
-  var message = $('<div/>').append(
-                  $("<p/></p>").addClass('dialog').html(
-                    "<ul>" +
-                      "<li><kbd>Alt</kbd>+<kbd>r</kbd>: Enter/Exit RISE</li>" +
-                      "<li><kbd>w</kbd>: Toggle overview mode</li>" +
-                      "<li><kbd>,</kbd>: Toggle help and exit buttons</li>" +
-                      "<li><kbd>Home</kbd>: First slide</li>" +
-                      "<li><kbd>End</kbd>: Last slide</li>" +
-                      "<li><kbd>space</kbd>: Next</li>" +
-                      "<li><kbd>Shift</kbd>+<kbd>space</kbd>: Previous</li>" +
-                      "<li><kbd>PgUp</kbd>: Up</li>" +
-                      "<li><kbd>PgDn</kbd>: Down</li>" +
-                      "<li><kbd>left</kbd>: Left</li>" +
-                      "<li><kbd>right</kbd>: Right</li>" +
-                      "<li><kbd>.</kbd> or <kbd>/</kbd>: black screen</li>" +
-                    "</ul>" +
-                    "<b>NOTE: You have to use these shortcuts in command mode.</b>"
-                    )
-                );
-
-  IPython.dialog.modal({
-    title : "Reveal Shortcuts Help",
-    body : message,
-    buttons : {
-        OK : {class: "btn-danger"}
-    }
-  });
-}
-
-function buttonHelp() {
-    var help_button = $('<i/>')
-        .attr('id','help_b')
-        .attr('title','Reveal Shortcuts Help')
-        .addClass('fa-question fa-2x fa')
-        .addClass('my-main-tool-bar')
-        .click(function() { KeysMessager(); });
-    $('.reveal').after(help_button);
-}
-
-function buttonExit() {
-    var exit_button = $('<i/>')
-        .attr('id','exit_b')
-        .attr('title','RISE Exit')
-        .addClass('fa-times-circle fa-2x fa')
-        .addClass('my-main-tool-bar')
-        .click(function() {
-            revealMode('simple', 'zoom');
-        });
-    $('.reveal').after(exit_button);
-}
-
 function Remover(config) {
   Reveal.configure({minScale: 1.0});
   Reveal.removeEventListeners();
 
   RevealChalkboard.clear();
-  $("#notescanvas, #chalkboard, #toggle-notes, #toggle-chalkboard").remove();
+  $("#notescanvas, #chalkboard").remove();
 
   $('body').removeClass("rise-enabled");
-
-  var scroll = config.get_sync('scroll');
-  if (scroll === true) {
-    $('body').css("overflow-y", "");
-    $('body').css("overflow-x", "");
-  }
 
   IPython.menubar._size_header();
 
@@ -475,24 +329,20 @@ function revealMode() {
   * If the tag exits, we exit. Otherwise, we enter the reveal mode.
   */
   var tag = $('#maintoolbar').hasClass('reveal_tagging');
-  var config = configSlides()
 
   if (!tag) {
     // Preparing the new reveal-compatible structure
     var selected_slide = markupSlides($('div#notebook-container'));
     // Set the hash part of the URL
-    setStartingSlide(selected_slide, config);
+    setStartingSlide(selected_slide);
     // Adding the reveal stuff
-    Revealer(config);
+    Revealer();
     // Minor modifications for usability
     setupKeys("reveal_mode");
-    buttonExit();
-    buttonHelp();
     $('#maintoolbar').addClass('reveal_tagging');
   } else {
-    Remover(config);
+    Remover();
     setupKeys("notebook_mode");
-    $('#exit_b, #help_b').remove();
     $('#maintoolbar').removeClass('reveal_tagging');
     // Workaround... should be a better solution. Need to investigate codemirror
     fixCellHeight();
