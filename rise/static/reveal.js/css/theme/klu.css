@@ -5,7 +5,7 @@
  * This theme is Copyright (C) 2012 Owen Versteeg, https://github.com/StereotypicalApps. It is MIT licensed.
  * reveal.js is Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
  */
-@import url(https://fonts.googleapis.com/css?family=PT+Sans);
+@import 'https://fonts.googleapis.com/css?family=Open+Sans';
 
 /*********************************************
  * GLOBAL STYLES
@@ -15,7 +15,7 @@ body {
   background-color: #fff; }
 
 .reveal {
-  font-family: PT Sans, Helvetica, sans-serif;
+  font-family: PT Sans, sans-serif;
   font-size: 28px;
   font-weight: normal;
   color: #000; }
@@ -37,7 +37,7 @@ body {
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
   margin: 0 0 20px 0;
   color: darkred;
-  font-family: PT Sans, Helvetica, Impact, sans-serif;
+  font-family: PT Sans, sans-serif;
   font-weight: normal;
   line-height: 1.25;
   letter-spacing: normal;
