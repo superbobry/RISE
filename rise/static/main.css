@@ -65,7 +65,7 @@
   -webkit-transition-timing-function: ease;
           transition-timing-function: ease;
   text-align: left;
-  font-size: 160%;
+  font-size: 140%;
 }
 .rise-enabled .reveal .slide-number {
   -webkit-transition-property: all;
