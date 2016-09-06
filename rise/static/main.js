@@ -181,15 +181,17 @@ function Revealer() {
     width: 1140,  // 4:3
     height: 855,
     minScale: 1.0, // for codemirror to work right.
+    margin: 0.1,
 
     theme: 'klu',
-    transition: 'linear',
+    transition: 'none',
 
-    slideNumber: 'h.v/t',
+    slideNumber: 'h.v',
 
     keyboard: {
         13: null, // Enter disabled
         66: null, // b, black pause disabled, use period or forward slash
+        67: function() { RevealChalkboard.toggleNotesCanvas() },  // c
         72: null, // h, left disabled
         74: null, // j, down disabled
         75: null, // k, up disabled
@@ -203,7 +205,7 @@ function Revealer() {
     chalkboard: {
         theme: "whiteboard",
         color: ["#D84315", "white"],
-        transition: 200,
+        transition: 1,
         toggleChalkboardButton: false,
         toggleNotesButton: false,
         readOnly: false
