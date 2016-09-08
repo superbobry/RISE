@@ -165,7 +165,7 @@ function Revealer() {
   $('div#notebook-container').addClass("slides");
 
   // Header
-  $('head').prepend('<link rel="stylesheet" href=' + require.toUrl("./reveal.js/css/theme/default.css") + ' id="theme" />');
+  $('head').prepend('<link rel="stylesheet" href=' + require.toUrl("./reveal.js/css/theme/klu.css") + ' id="theme" />');
   $('head').prepend('<link rel="stylesheet" href=' + require.toUrl("./reset_reveal.css") + ' id="revealcss" />');
 
   // Tailer
@@ -212,12 +212,6 @@ function Revealer() {
     },
 
     dependencies: [
-        { src: "static/custom/livereveal/reveal.js/lib/js/classList.js",
-          condition: function() { return !document.body.classList; } },
-        { src: "static/custom/livereveal/reveal.js/plugin/highlight/highlight.js",
-          async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-        { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true,
-          condition: function() { return !!document.body.classList; } },
         { src: require.toUrl("./reveal.js/plugin/chalkboard/chalkboard.js"),
           async: true }
         ]

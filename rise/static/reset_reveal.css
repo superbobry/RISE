@@ -519,6 +519,8 @@ body {
 	height: 100%;
 	left: 50%;
 	top: 50%;
+    bottom: auto; right: auto;
+    transform: translate(-50%, -50%);
 
 	overflow: visible;
 	z-index: 1;
@@ -609,11 +611,6 @@ body {
 	   -moz-transition-duration: 1200ms;
 	    -ms-transition-duration: 1200ms;
 	        transition-duration: 1200ms;
-}
-
-.reveal .slides>section {
-	left: -50%;
-	top: -50%;
 }
 
 .reveal .slides>section.stack {
@@ -1866,5 +1863,3 @@ body {
 .zoomed .reveal .roll span:after {
 	visibility: hidden;
 }
-
-
