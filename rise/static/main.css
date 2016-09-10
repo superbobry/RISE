@@ -111,9 +111,6 @@
 .rise-enabled .reveal .progress {
   margin-bottom: 0;
 }
-.rise-enabled .reveal .progress span {
-  background: #727272;
-}
 .rise-enabled .reveal .reveal-skip,
 .rise-enabled .reveal .reveal-notes {
   display: none;
