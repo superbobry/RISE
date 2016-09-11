@@ -386,7 +386,7 @@ var RevealChalkboard = window.RevealChalkboard || (function(){
 ******************************************************************/
 
 	function drawWithPen(context,fromX,fromY,toX,toY){
-		context.lineWidth = 3;
+		context.lineWidth = 2;
 		context.lineCap = 'round';
 		context.strokeStyle = color[0];
 		context.beginPath();
@@ -396,7 +396,7 @@ var RevealChalkboard = window.RevealChalkboard || (function(){
 	}
 
 	function drawWithChalk(context,fromX,fromY,toX,toY){
-		var brushDiameter = 7;
+		var brushDiameter = 5;
 		context.lineWidth = brushDiameter;
 		context.lineCap = 'round';
 		context.fillStyle = color[1]; // 'rgba(255,255,255,0.5)';
