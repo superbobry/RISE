@@ -206,6 +206,7 @@ function Revealer() {
     chalkboard: {
         theme: "whiteboard",
         color: ["#D84315", "white"],
+        pen: ["crosshair", "chrosshair"],
         transition: 1,
         toggleChalkboardButton: false,
         toggleNotesButton: false,
