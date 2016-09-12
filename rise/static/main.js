@@ -175,18 +175,19 @@ function Revealer() {
 
     var options = {
     controls: false,
-    progress: true,
+    progress: false,
     history: false,
     center: true,
-    width: 1140,  // 4:3
-    height: 855,
+    width: 1050,   // 1:1
+    height: 1050,
     minScale: 1.0, // for codemirror to work right.
-    margin: 0.1,
+    margin: 0,
+    center: false,
 
     theme: 'klu',
     transition: 'none',
 
-    slideNumber: 'h.v',
+    slideNumber: false,
 
     keyboard: {
         13: null, // Enter disabled

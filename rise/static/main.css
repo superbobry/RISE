@@ -117,7 +117,7 @@
 }
 .rise-enabled #notebook {
   overflow: hidden;
-  font-size: 18px;
+  font-size: 20px;
 }
 .rise-enabled #notebook.reveal {
   padding-top: 0px;
