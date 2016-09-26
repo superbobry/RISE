@@ -192,6 +192,10 @@
   -webkit-transition-timing-function: ease;
           transition-timing-function: ease;
   margin-top: 0.05em;
+  max-width: 100% !important;
+}
+.rise-enabled .output_error {
+  font-size: 80%;
 }
 .rise-enabled .CodeMirror {
   -webkit-transition-property: all;
