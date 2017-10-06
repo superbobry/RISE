@@ -30,7 +30,7 @@ function configSlides() {
       height: "100%",
       margin: 0.1,
       minScale: 1.0, //we need this for codemirror to work right
-      theme: 'simple',
+      theme: 'default',
       transition: 'linear',
       slideNumber: true,
       start_slideshow_at: 'beginning',
@@ -305,8 +305,6 @@ function Revealer(selected_slide, config) {
     keyboard: {
     13: null, // Enter disabled
     27: null, // ESC disabled
-    38: null, // up arrow disabled
-    40: null, // down arrow disabled
     66: null, // b, black pause disabled, use period or forward slash
     72: null, // h, left disabled
     74: null, // j, down disabled
