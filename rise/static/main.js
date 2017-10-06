@@ -308,7 +308,6 @@ function Revealer(selected_slide, config) {
     38: null, // up arrow disabled
     40: null, // down arrow disabled
     66: null, // b, black pause disabled, use period or forward slash
-    70: function () {fullscreenHelp();}, // disable fullscreen inside the slideshow, makes codemirror unrealiable
     72: null, // h, left disabled
     74: null, // j, down disabled
     75: null, // k, up disabled
@@ -318,7 +317,6 @@ function Revealer(selected_slide, config) {
     80: null, // p, up disable
     // 83: null, // s, notes, but not working because notes is a plugin
     87: function() {Reveal.toggleOverview();}, // w, toggle overview
-    188: function() {$('#help_b,#exit_b').fadeToggle();},
     },
 
     // Optional libraries used to extend on reveal.js
@@ -398,96 +396,6 @@ function setupKeys(mode){
     Jupyter.keyboard_manager.command_shortcuts.remove_shortcut("shift-f");
     Jupyter.keyboard_manager.command_shortcuts.set_shortcut("f", "jupyter-notebook:find-and-replace");
   }
-}
-
-function KeysMessager() {
-  var message = $('<div/>').append(
-                  $("<p/></p>").addClass('dialog').html(
-                    "<ul>" +
-                      "<li><kbd>Alt</kbd>+<kbd>r</kbd>: Enter/Exit RISE</li>" +
-                      "<li><kbd>w</kbd>: Toggle overview mode</li>" +
-                      "<li><kbd>,</kbd>: Toggle help and exit buttons</li>" +
-                      "<li><kbd>Home</kbd>: First slide</li>" +
-                      "<li><kbd>End</kbd>: Last slide</li>" +
-                      "<li><kbd>space</kbd>: Next</li>" +
-                      "<li><kbd>Shift</kbd>+<kbd>space</kbd>: Previous</li>" +
-                      "<li><kbd>PgUp</kbd>: Up</li>" +
-                      "<li><kbd>PgDn</kbd>: Down</li>" +
-                      "<li><kbd>left</kbd>: Left</li>" +
-                      "<li><kbd>right</kbd>: Right</li>" +
-                      "<li><kbd>.</kbd> or <kbd>/</kbd>: black screen</li>" +
-                    "</ul>" +
-                    "<b>NOTE: You have to use these shortcuts in command mode.</b>"
-                    )
-                );
-
-  Jupyter.dialog.modal({
-    title : "Reveal Shortcuts Help",
-    body : message,
-    buttons : {
-        OK : {class: "btn-danger"}
-    }
-  });
-}
-
-function buttonHelp() {
-    var help_button = $('<i/>')
-        .attr('id','help_b')
-        .attr('title','Reveal Shortcuts Help')
-        .addClass('fa-question fa-4x fa')
-        .addClass('my-main-tool-bar')
-        .css('position','fixed')
-        .css('bottom','0.5em')
-        .css('left','0.6em')
-        .css('opacity', '0.6')
-        .css('z-index', '30')
-        .click(
-            function(){
-                KeysMessager();
-            }
-        );
-    $('.reveal').after(help_button);
-}
-
-function buttonExit() {
-    var exit_button = $('<i/>')
-        .attr('id','exit_b')
-        .attr('title','RISE Exit')
-        .addClass('fa-times-circle fa-4x fa')
-        .addClass('my-main-tool-bar')
-        .css('position','fixed')
-        .css('top','0.5em')
-        .css('left','0.48em')
-        .css('opacity', '0.6')
-        .css('z-index', '30')
-        .click(
-            function(){
-                revealMode('simple', 'zoom');
-            }
-        );
-    $('.reveal').after(exit_button);
-}
-
-function fullscreenHelp() {
-  var message = $('<div/>').append(
-                  $("<p/></p>").addClass('dialog').html(
-                    "<b>Entering Fullscreen mode from inside RISE is disabled.</b>" +
-                    "<br>" +
-                    "<b>Exit RISE, make you browser Fullscreen and re-enter RISE</b>" +
-                    "<br>" +
-                    "That will help Reveal.js to perform the correct transformations " +
-                    "at the time to interact with code cells."
-                    )
-                );
-
-  Jupyter.dialog.modal({
-    title : "Fullscreen Help",
-    body : message,
-    buttons : {
-        OK : {class: "btn-danger"}
-    }
-  });
-
 }
 
 function removeHash() {
@@ -594,15 +502,11 @@ function revealMode() {
     Revealer(selected_slide, config);
     // Minor modifications for usability
     setupKeys("reveal_mode");
-    buttonExit();
-    buttonHelp();
     $('#maintoolbar').addClass('reveal_tagging');
   } else {
     var current_cell_index = reveal_cell_index(Jupyter.notebook);
     Remover(config);
     setupKeys("notebook_mode");
-    $('#exit_b').remove();
-    $('#help_b').remove();
     $('#maintoolbar').removeClass('reveal_tagging');
     // Workaround... should be a better solution. Need to investigate codemirror
     fixCellHeight();
