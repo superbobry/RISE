@@ -41,7 +41,7 @@
     .slides {
       .transition-all;
       text-align: left;
-      font-size: 160%;
+      font-size: 140%;
     }
 
     .slide-number {
@@ -74,7 +74,6 @@
 
     .progress {
       margin-bottom: 0;
-      span { background: @some-grey; }
     }
 
     .reveal-skip, .reveal-notes { display: none; }
@@ -82,7 +81,10 @@
   } // .reveal
 
   /* Notebook-specific */
-  #notebook { overflow: hidden; }
+  #notebook {
+    overflow: hidden;
+    font-size: 20px;
+  }
 
   #notebook.reveal {
     padding-top: 0px;
@@ -139,6 +141,11 @@
   .output_subarea {
     .transition-all;
     margin-top: 0.05em;
+    max-width: 100% !important;
+  }
+
+  .output_error {
+    font-size: 80%;
   }
 
   .CodeMirror {

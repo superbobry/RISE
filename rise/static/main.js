@@ -22,22 +22,7 @@ define([
 */
 function configSlides() {
 
-  var default_config = {
-      controls: true,
-      progress: true,
-      history: true,
-      width: "100%",
-      height: "100%",
-      margin: 0.1,
-      minScale: 1.0, //we need this for codemirror to work right
-      theme: 'default',
-      transition: 'linear',
-      slideNumber: true,
-      start_slideshow_at: 'beginning',
-      scroll: false,
-      center: true,
-      autolaunch: false
-  };
+  var default_config = {};
 
   var config_section = new configmod.ConfigSection('livereveal',
                               {base_url: utils.get_body_data("baseUrl")});
@@ -168,41 +153,9 @@ function markupSlides(container) {
  * changing to the one we want. By changing the URL before setting up reveal,
  * the slideshow really starts on the desired slide.
  */
-function setStartingSlide(selected, config) {
-
-    var start_slideshow_promise = config.get('start_slideshow_at');
-    // We need the value after the promise resolution
-    start_slideshow_promise.then(function(start_slideshow){
-      if (start_slideshow === 'selected') {
-          // Start from the selected cell
-          Reveal.slide(selected[0], selected[1]);
-      } else {
-          // Start from the beginning
-          Reveal.slide(0, 0);
-      }
-    });
-
-}
-
-/* Setup the scrolling in the current slide if the config option is activated
-*  and the content is greater than 0.95 * slide height
-*/
-function setScrollingSlide(config) {
-
-  var scroll_promise = config.get('scroll');
-  scroll_promise.then(function(scroll){
-    if (scroll === true) {
-      var h = $('.reveal').height() * 0.95;
-      $('section.present').find('section')
-        .filter(function() {
-          return $(this).height() > h;
-        })
-        .css('height', 'calc(95vh)')
-        .css('overflow-y', 'scroll')
-        .css('margin-top', '20px');
-    }
-  });
-
+function setStartingSlide(selected) {
+    // Start from the selected cell
+    Reveal.slide(selected[0], selected[1]);
 }
 
 /* Setup the auto-launch function, which checks metadata to see if
@@ -249,7 +202,7 @@ function disconnectOutputObserver() {
 }
 
 
-function Revealer(selected_slide, config) {
+function Revealer(selected_slide) {
   $('body').addClass("rise-enabled");
   // Prepare the DOM to start the slideshow
   $('div#header').hide();
@@ -260,15 +213,10 @@ function Revealer(selected_slide, config) {
   $('div#notebook-container').addClass("slides");
 
   // Header
-  // Available themes are in static/css/theme
-  var theme_promise = config.get('theme');
-  theme_promise.then(function(theme){
-    $('head')
-    .prepend('<link rel="stylesheet" href='
-    + require.toUrl("./reveal.js/css/theme/" + theme + ".css")
-    + ' id="theme" />');
-  });
-
+  $('head')
+  .prepend('<link rel="stylesheet" href='
+  + require.toUrl("./reveal.js/css/theme/klu.css")
+  + ' id="theme" />');
   // Add reveal css
   $('head')
   .prepend('<link rel="stylesheet" href='
@@ -283,28 +231,21 @@ function Revealer(selected_slide, config) {
     var options = {
     // All this config option load correctly just because of require-indeced delay,
     // it would be better to catch them from the config.get promise.
-    controls: config.get_sync('controls'),
-    progress: config.get_sync('progress'),
-    history: config.get_sync('history'),
-
-    // You can switch width and height to fix the projector
-    width: config.get_sync('width'),
-    height: config.get_sync('height'),
-    margin: config.get_sync('margin'),
-    minScale: config.get_sync('minScale'), //we need this for codemirror to work right)
-
-    // default/cube/page/concave/zoom/linear/none
-    transition: config.get_sync('transition'),
-
-    slideNumber: config.get_sync('slideNumber'),
-    center: config.get_sync('center'),
-
-    //parallaxBackgroundImage: 'https://raw.github.com/damianavila/par_IPy_slides_example/gh-pages/figs/star_wars_stormtroopers_darth_vader.jpg',
-    //parallaxBackgroundSize: '2560px 1600px',
+    controls: false,
+    progress: true,
+    history: false,
+    theme: 'klu',
+    width: '100%',
+    height: '100%',
+    margin: 0.1,
+    minScale: 1.0,
+    transition: 'linear',
+    slideNumber: false,  // 'h.v/t'
+    center: false,
 
     keyboard: {
     13: null, // Enter disabled
-    27: null, // ESC disabled
+    27: function() { revealMode() },
     66: null, // b, black pause disabled, use period or forward slash
     72: null, // h, left disabled
     74: null, // j, down disabled
@@ -314,44 +255,34 @@ function Revealer(selected_slide, config) {
     79: null, // o disabled
     80: null, // p, up disable
     // 83: null, // s, notes, but not working because notes is a plugin
-    87: function() {Reveal.toggleOverview();}, // w, toggle overview
     },
 
     // Optional libraries used to extend on reveal.js
     // Notes are working partially... it opens the notebooks, not the slideshows...
     dependencies: [
-            //{ src: "static/custom/livereveal/reveal.js/lib/js/classList.js", condition: function() { return !document.body.classList; } },
-            //{ src: "static/custom/livereveal/reveal.js/plugin/highlight/highlight.js", async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: require.toUrl("./reveal.js/lib/js/classList.js"), condition: function() { return !document.body.classList; } },
+            { src: require.toUrl("./reveal.js/plugin/highlight/highlight.js"), async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
             { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true, condition: function() { return !!document.body.classList; } }
         ]
     };
 
-    // Set up the Leap Motion integration if configured
-    var leap = config.get_sync('leap_motion');
-    if (leap !== undefined) {
-        options.dependencies.push({ src: require.toUrl('./reveal.js/plugin/leap/leap.js'), async: true });
-        options.leap = leap;
-    }
-
-    Reveal.initialize(options);
+    Reveal.initialize();
+    Reveal.configure(options);
 
     Reveal.addEventListener( 'ready', function( event ) {
       Unselecter();
-      // check and set the scrolling slide when you start the whole thing
-      setScrollingSlide(config);
     });
 
     Reveal.addEventListener( 'slidechanged', function( event ) {
       Unselecter();
-      // check and set the scrolling slide every time the slide change
-      setScrollingSlide(config);
     });
 
     // Sync when an output is generated.
     setupOutputObserver();
 
     // Setup the starting slide
-    setStartingSlide(selected_slide, config);
+    setStartingSlide(selected_slide);
+    Unselecter();
 
   });
 }
@@ -401,7 +332,7 @@ function removeHash() {
                                                      + window.location.search);
 }
 
-function Remover(config) {
+function Remover() {
   Reveal.configure({minScale: 1.0});
   Reveal.removeEventListeners();
   $('body').removeClass("rise-enabled");
@@ -491,19 +422,18 @@ function revealMode() {
   // We search for a class tag in the maintoolbar to check if reveal mode is "on".
   // If the tag exits, we exit. Otherwise, we enter the reveal mode.
   var tag = $('#maintoolbar').hasClass('reveal_tagging');
-  var config = configSlides()
 
   if (!tag) {
     // Preparing the new reveal-compatible structure
     var selected_slide = markupSlides($('div#notebook-container'));
     // Adding the reveal stuff
-    Revealer(selected_slide, config);
+    Revealer(selected_slide);
     // Minor modifications for usability
     setupKeys("reveal_mode");
     $('#maintoolbar').addClass('reveal_tagging');
   } else {
     var current_cell_index = reveal_cell_index(Jupyter.notebook);
-    Remover(config);
+    Remover();
     setupKeys("notebook_mode");
     $('#maintoolbar').removeClass('reveal_tagging');
     // Workaround... should be a better solution. Need to investigate codemirror
