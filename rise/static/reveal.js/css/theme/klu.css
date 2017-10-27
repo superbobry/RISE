@@ -363,3 +363,21 @@ html:-moz-full-screen-ancestor {
 @media print {
     .presentation-only, .audio-controls, .slide-menu-button, .chalkboard-button { display: none!important; }
 }
+
+/*********************************************
+ * Hacks
+ *********************************************/
+.rise-enabled .CodeMirror {
+  font-size: 140% !important; }
+
+.rise-enabled .reveal .slide-number {
+  right: 2em !important;
+  bottom: .5em !important; }
+
+.rise-enabled .rendered_html h1 {
+  font-size: 280% !important; }
+
+.rise-enabled .rendered_html h2:first-child,
+.rise-enabled .rendered_html h3:first-child {
+    margin-top: 0 !important;
+}

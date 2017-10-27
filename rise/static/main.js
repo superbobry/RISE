@@ -240,7 +240,8 @@ function Revealer(selected_slide) {
     margin: 0.1,
     minScale: 1.0,
     transition: 'linear',
-    slideNumber: false,  // 'h.v/t'
+    transitionSpeed: 'fast',
+    slideNumber: 'c/t',
     center: false,
 
     keyboard: {
