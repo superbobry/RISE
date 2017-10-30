@@ -5,7 +5,7 @@
  * This theme is Copyright (C) 2012 Owen Versteeg, https://github.com/StereotypicalApps. It is MIT licensed.
  * reveal.js is Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
  */
-@import url(https://fonts.googleapis.com/css?family=Merriweather|Open+Sans|Josefin+Slab);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 /*********************************************
  * GLOBAL STYLES
@@ -37,8 +37,8 @@ body {
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
   margin: 0 0 20px 0;
   color: darkred;
-  font-family: "Josefin Slab", Helvetica, Impact, sans-serif;
   font-weight: normal !important;
+  font-family: "PT Sans", Helvetica, sans-serif;
   line-height: 1.25;
   letter-spacing: normal;
   text-transform: none;
@@ -197,8 +197,7 @@ body {
  * LINKS
  *********************************************/
 .reveal a {
-  color: firebrick;
-  text-decoration: none !important;
+  color: darkred;
   -webkit-transition: color 0.15s ease;
   -moz-transition: color 0.15s ease;
   transition: color 0.15s ease; }
