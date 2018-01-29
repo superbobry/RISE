@@ -255,7 +255,8 @@ function Revealer(selected_slide) {
     78: null, // n, down disable
     79: null, // o disabled
     80: null, // p, up disable
-    // 83: null, // s, notes, but not working because notes is a plugin
+    63: null, // ?, show help
+    //83: null, // s, notes, but not working because notes is a plugin
     },
 
     // Optional libraries used to extend on reveal.js
@@ -263,7 +264,7 @@ function Revealer(selected_slide) {
     dependencies: [
             { src: require.toUrl("./reveal.js/lib/js/classList.js"), condition: function() { return !document.body.classList; } },
             { src: require.toUrl("./reveal.js/plugin/highlight/highlight.js"), async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-            { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true, condition: function() { return !!document.body.classList; } }
+            { src: require.toUrl("./reveal.js/plugin/notes/notes.js"), async: true, condition: function() { return true; } }
         ]
     };
 

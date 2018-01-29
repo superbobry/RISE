@@ -15,7 +15,7 @@ body {
   background-color: #fff; }
 
 .reveal {
-  font-family: "PT Sans", Helvetica, sans-serif;
+  font-family: "IBM Plex Sans", Helvetica, sans-serif;
   font-size: 28px;
   font-weight: normal;
   color: #000; }
@@ -38,7 +38,7 @@ body {
   margin: 0 0 20px 0;
   color: darkred;
   font-weight: normal !important;
-  font-family: "PT Sans", Helvetica, sans-serif;
+  font-family: "IBM Plex Sans", Helvetica, sans-serif;
   line-height: 1.25;
   letter-spacing: normal;
   text-transform: none;
@@ -139,13 +139,13 @@ body {
   margin: 20px auto;
   text-align: left;
   font-size: 0.55em;
-  font-family: "PT Mono", monospace !important;
+  font-family: "IBM Plex Mono", monospace !important;
   line-height: 1.2em;
   word-wrap: break-word;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3); }
 
 .reveal code {
-  font-family: "PT Mono", monospace !important; }
+  font-family: "IBM Plex Mono", monospace !important; }
 
 .reveal pre code {
   display: block;
@@ -196,8 +196,8 @@ body {
 /*********************************************
  * LINKS
  *********************************************/
-.reveal a {
-  color: darkred;
+.reveal a, .reveal a code {
+  color: darkred !important;
   -webkit-transition: color 0.15s ease;
   -moz-transition: color 0.15s ease;
   transition: color 0.15s ease; }
