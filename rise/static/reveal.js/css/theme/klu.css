@@ -65,6 +65,7 @@ body {
 .reveal h3 code,
 .reveal h4 code {
   color: darkred;
+  background-color: white;
 }
 
 /*********************************************
